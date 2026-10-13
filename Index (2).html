@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheerio Resolve — Prototype</title>
+<style>
+:root{--navy:#152a43;--blue:#2457d6;--ink:#182230;--muted:#657184;--bg:#f4f7fb;--line:#e1e7ef;--green:#18794e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+header{height:66px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.5px}.brand span{color:var(--blue)}.pill{font-size:12px;background:#eef3ff;color:#2449a5;padding:6px 10px;border-radius:20px}
+main{max-width:1100px;margin:34px auto;padding:0 20px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--blue);text-transform:uppercase}
+h1{font-size:34px;letter-spacing:-1.2px;margin:8px 0}.sub{color:var(--muted);max-width:670px;line-height:1.55}
+.layout{display:grid;grid-template-columns:250px 1fr;gap:22px;margin-top:26px}.side,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 20px #18334d08}
+.side{padding:18px;height:max-content}.side h3{font-size:13px;color:var(--muted);margin:0 0 12px}.nav{padding:12px;border-radius:10px;margin:5px 0;font-size:14px;cursor:pointer}.nav.active{background:#eef3ff;color:#204ec3;font-weight:700}
+.panel{padding:26px;min-height:500px}.progress{display:flex;gap:7px;margin-bottom:25px}.progress span{height:4px;flex:1;background:#e7ebf2;border-radius:10px}.progress span.on{background:var(--blue)}
+h2{font-size:23px;margin:0 0 8px;letter-spacing:-.5px}.muted{color:var(--muted);font-size:14px;line-height:1.55}.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.choice{border:1px solid var(--line);border-radius:12px;padding:16px;text-align:left;background:white;cursor:pointer}.choice:hover,.choice:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2457d615}.choice b{display:block;margin:7px 0}.choice small{color:var(--muted);line-height:1.4}
+.btn{background:var(--blue);color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:white;color:var(--ink);border:1px solid var(--line)}.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.input{width:100%;border:1px solid #cbd4e0;border-radius:10px;padding:13px;font:inherit;margin:15px 0;resize:vertical}textarea.input{min-height:95px}.step{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}.num{width:30px;height:30px;border-radius:50%;background:#eef3ff;color:var(--blue);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+.notice{background:#fff8e8;border:1px solid #f5dba3;padding:13px;border-radius:10px;color:#704c00;font-size:13px;line-height:1.5;margin-top:15px}.success{background:#eaf8f0;border:1px solid #b9e4ca;padding:15px;border-radius:10px;color:#17633e;line-height:1.5}.hidden{display:none}.tag{font-size:11px;background:#f0f3f7;padding:5px 8px;border-radius:6px;color:#475467}
+footer{font-size:12px;color:#8993a2;text-align:center;margin:25px 0}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.side{display:none}.panel{padding:19px}h1{font-size:28px}.choices{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand">cheerio<span>.</span> <span style="color:#657184;font-weight:500">Resolve</span></div><div class="pill">Interactive concept prototype</div></header>
+<main>
+<div class="eyebrow">Help centre · Guided support</div>
+<h1>Let's get you unstuck.</h1>
+<p class="sub">Tell us what's happening. We'll walk you through simple steps, check whether they worked, and bring in a person if you need one.</p>
+<div class="layout">
+<aside class="side"><h3>SUPPORT MENU</h3><div class="nav active">✦ Guided troubleshooting</div><div class="nav" onclick="showArticles()">▤ Help articles</div><div class="nav" onclick="startHandoff()">♧ Contact support</div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><span class="tag">Typical time: 2–4 min</span><p class="muted" style="font-size:12px;margin-top:14px">Prototype only. Not connected to Cheerio accounts or live system status.</p></aside>
+<section class="panel">
+<div class="progress"><span class="on" id="p1"></span><span id="p2"></span><span id="p3"></span></div>
+<div id="screen1">
+<h2>What do you need help with?</h2><p class="muted">Choose the closest match. You don't need to know the technical term.</p>
+<div class="choices">
+<button class="choice" onclick="choose('whatsapp')"><span>📱</span><b>Connect WhatsApp</b><small>Number, API setup or connection status</small></button>
+<button class="choice" onclick="choose('template')"><span>📝</span><b>Message template</b><small>Rejected, pending or not sending</small></button>
+<button class="choice" onclick="choose('flow')"><span>🔀</span><b>Bot or AI agent flow</b><small>Wrong reply, trigger or publishing issue</small></button>
+<button class="choice" onclick="choose('integration')"><span>🔗</span><b>Integration not working</b><small>Webhook, CRM or missing events</small></button>
+</div>
+<label for="issue" class="muted">Or describe it in your own words</label>
+<input id="issue" class="input" placeholder="e.g. My template was rejected and I don't know why">
+<div class="btnrow"><button class="btn" onclick="fromText()">Find next step →</button><button class="btn secondary" onclick="startHandoff()">Talk to a person</button></div>
+</div>
+<div id="screen2" class="hidden">
+<span class="tag" id="issueTag">SETUP HELP</span><h2 id="stepTitle" style="margin-top:14px">Let's check the basics</h2><p class="muted" id="stepIntro"></p>
+<div id="steps"></div>
+<div class="notice" id="caution">For your security, never paste passwords, access tokens or API secrets into chat.</div>
+<div class="btnrow"><button class="btn" onclick="worked()">That fixed it</button><button class="btn secondary" onclick="notWorked()">Still not working</button><button class="btn secondary" onclick="startHandoff()">Contact support</button></div>
+</div>
+<div id="screen3" class="hidden">
+<div id="result"></div><div class="btnrow"><button class="btn" onclick="restart()">Start another issue</button><button class="btn secondary" onclick="showArticles()">View related help</button></div>
+</div>
+<div id="screenArticles" class="hidden">
+<h2>Related help articles</h2><p class="muted">Suggested article titles are examples for this prototype. In production, link only to approved, current Cheerio documentation.</p>
+<div id="articleList"></div>
+<div class="btnrow"><button class="btn" onclick="restart()">Back to support</button><button class="btn secondary" onclick="startHandoff()">Contact support</button></div>
+</div>
+</section>
+</div>
+<footer>Cheerio Resolve · Product concept · No live account access, actions or status checks are implemented</footer>
+</main>
+<script>
+let current='whatsapp', attempts=0, issueText='', errorText='', ticketCounter=1042;
+const content={
+whatsapp:{tag:'WHATSAPP CONNECTION',title:'Let’s check your connection safely',intro:'Start with checks that do not change your account settings. The exact labels may vary by account.',steps:['Open your WhatsApp channel settings in Cheerio and read the connection status.','If a status or error message is shown, note its exact wording. Never share access tokens or secrets.','Check whether the connected business number and account are the ones you intended to use.'],articles:['Check your WhatsApp channel connection status','Common WhatsApp connection messages']},
+template:{tag:'MESSAGE TEMPLATE',title:'Find out why the template is stuck',intro:'A template may be pending review, rejected, or approved but not used by the campaign.',steps:['Open the template and check its current status and any rejection reason shown.','If rejected, compare the message with the stated policy reason and edit only the relevant part.','After resubmitting, wait for the official status to update; do not assume approval before it appears.'],articles:['Understand template statuses','Review a template rejection reason']},
+flow:{tag:'BOT / AI AGENT FLOW',title:'Test the flow one step at a time',intro:'We will isolate whether the issue is in the trigger, a branch, or the published version.',steps:['Open the flow and confirm that the latest intended version is published.','Run a test with one simple example and note the exact step where the result differs.','Check the trigger and the branch conditions around that step before changing multiple things at once.'],articles:['Test and publish an AI agent flow','Check trigger and branch conditions']},
+integration:{tag:'INTEGRATION',title:'Trace where the event stops',intro:'Avoid reconnecting everything immediately. First identify whether the event was sent and received.',steps:['Check the integration status and last successful sync or event time.','If available, open the latest event log and record its timestamp and non-sensitive error code.','Check whether the receiving system is connected and whether the expected event type is enabled.'],articles:['Check integration status and event logs','Troubleshoot missing webhook events']}
+};
+function choose(k){current=k;attempts=0;issueText='';errorText='';renderSteps();show('screen2');setProgress(2)}
+function fromText(){issueText=document.getElementById('issue').value.trim();let t=issueText.toLowerCase();if(!issueText){document.getElementById('issue').focus();return}if(t.includes('template')||t.includes('reject')||t.includes('pending'))current='template';else if(t.includes('bot')||t.includes('flow')||t.includes('agent'))current='flow';else if(t.includes('integration')||t.includes('webhook')||t.includes('crm')||t.includes('event'))current='integration';else current='whatsapp';attempts=0;renderSteps();show('screen2');setProgress(2)}
+function renderSteps(){let d=content[current];document.getElementById('issueTag').textContent=d.tag;document.getElementById('stepTitle').textContent=d.title;document.getElementById('stepIntro').textContent=d.intro;document.getElementById('steps').innerHTML=d.steps.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div>${s}</div></div>`).join('')}
+function worked(){show('screen3');setProgress(3);document.getElementById('result').innerHTML='<div class="success"><b>Thanks for confirming.</b><p>Your issue is marked as <b>user-confirmed</b>, not system-verified. In a live Cheerio product, a reliable account status check could verify the outcome where available.</p><p><b>Next:</b> rate the helpfulness of this guidance so the support team can improve it.</p><div class="btnrow"><button class="btn secondary" onclick="rateHelp(5)">Helpful</button><button class="btn secondary" onclick="rateHelp(2)">Not helpful</button></div><p id="ratingMsg" class="muted"></p></div>'}
+function rateHelp(score){document.getElementById('ratingMsg').textContent='Feedback recorded in this demo: '+(score===5?'Helpful':'Not helpful')+'.'}
+function notWorked(){attempts++;show('screen3');setProgress(3);document.getElementById('result').innerHTML='<h2>Let’s get a person involved.</h2><p class="muted">You have tried the guided steps. We won’t keep you in a loop. Add the exact error if you have it; this is optional.</p><label class="muted" for="errorDetails">Error message or what happened (optional)</label><textarea id="errorDetails" class="input" rows="3" placeholder="e.g. The status says Disconnected after reconnecting"></textarea><p class="muted">Do not include passwords, access tokens, API keys, or other secrets.</p><div class="btnrow"><button class="btn" onclick="createTicket(false)">Prepare support ticket →</button><button class="btn secondary" onclick="createTicket(true)">Skip details</button></div>'}
+function startHandoff(){show('screen3');setProgress(3);document.getElementById('result').innerHTML='<h2>Contact human support</h2><p class="muted">You can ask for a person at any time. Add a brief description if you want the support team to have context.</p><label class="muted" for="errorDetails">What do you need help with? (optional)</label><textarea id="errorDetails" class="input" rows="3" placeholder="Describe the issue in your own words"></textarea><p class="muted">Never enter credentials or API secrets.</p><div class="btnrow"><button class="btn" onclick="createTicket(true)">Continue to support →</button><button class="btn secondary" onclick="restart()">Cancel</button></div>'}
+function createTicket(skip){const field=document.getElementById('errorDetails');errorText=(!skip&&field)?field.value.trim():'';const ticket='DEMO-'+ticketCounter++;const d=content[current]||content.whatsapp;document.getElementById('result').innerHTML='<div class="success"><div class="eyebrow" style="color:#18794e">DEMO CONFIRMATION · NOT A LIVE TICKET</div><h2 style="margin-top:8px">Your support handoff is ready.</h2><p>Demo reference: <b>'+ticket+'</b></p><p><b>Issue:</b> '+d.tag+'</p><p><b>Steps attempted:</b> '+(attempts>0?d.steps.length:'User requested human support')+'</p><p><b>Reported outcome:</b> Unresolved / human requested</p><p><b>Error details:</b> '+escapeHtml(errorText||'Not provided')+'</p><p><b>Agent handoff includes:</b> issue category, steps shown, reported outcome and optional error description. Credentials and secrets are excluded.</p><p class="muted">In a live implementation, this action would create a ticket in Cheerio’s support system and show the actual ticket ID and expected response time. This prototype does not send a request.</p></div><div class="btnrow"><button class="btn" onclick="restart()">Start another issue</button><button class="btn secondary" onclick="showArticles()">View related help</button></div>'}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showArticles(){const d=content[current]||content.whatsapp;document.getElementById('articleList').innerHTML=d.articles.map((a,i)=>`<div class="step"><div class="num">${i+1}</div><div><b>${a}</b><p class="muted">Suggested article title for this concept. In production, link only to approved, current Cheerio documentation.</p></div></div>`).join('');show('screenArticles');setProgress(1)}
+function restart(){show('screen1');setProgress(1);document.getElementById('issue').value='';attempts=0;issueText='';errorText=''}
+function show(id){['screen1','screen2','screen3','screenArticles'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id))}
+function setProgress(n){['p1','p2','p3'].forEach((x,i)=>document.getElementById(x).classList.toggle('on',i<n))}
+</script>
+</body></html>
